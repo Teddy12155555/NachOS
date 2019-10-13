@@ -674,8 +674,8 @@ timer.o: ../machine/timer.cc /usr/include/stdc-predef.h \
 alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/alarm.h ../lib/utility.h \
  ../lib/copyright.h ../machine/callback.h ../machine/timer.h \
- ../machine/callback.h ../threads/main.h ../lib/debug.h ../lib/utility.h \
- ../lib/sysdep.h /usr/include/c++/4.8/iostream \
+ ../machine/callback.h ../threads/thread.h ../lib/sysdep.h \
+ /usr/include/c++/4.8/iostream \
  /usr/include/i386-linux-gnu/c++/4.8/bits/c++config.h \
  /usr/include/i386-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/features.h /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -759,12 +759,12 @@ alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/stdlib-float.h /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/i386-linux-gnu/bits/stdio_lim.h \
  /usr/include/i386-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- ../userprog/userkernel.h ../threads/kernel.h ../threads/thread.h \
- ../lib/sysdep.h ../machine/machine.h ../machine/translate.h \
- ../userprog/addrspace.h ../filesys/filesys.h ../filesys/openfile.h \
- ../threads/scheduler.h ../lib/list.h ../lib/debug.h ../lib/list.cc \
- ../machine/interrupt.h ../machine/stats.h ../filesys/synchdisk.h \
- ../machine/disk.h ../threads/synch.h
+ ../machine/machine.h ../machine/translate.h ../userprog/addrspace.h \
+ ../filesys/filesys.h ../filesys/openfile.h ../threads/main.h \
+ ../lib/debug.h ../lib/utility.h ../lib/sysdep.h ../userprog/userkernel.h \
+ ../threads/kernel.h ../threads/scheduler.h ../lib/list.h ../lib/debug.h \
+ ../lib/list.cc ../machine/interrupt.h ../machine/stats.h \
+ ../filesys/synchdisk.h ../machine/disk.h ../threads/synch.h
 kernel.o: ../threads/kernel.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/copyright.h ../lib/utility.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -1711,7 +1711,10 @@ exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
  ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
  ../machine/callback.h ../machine/timer.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../threads/main.h \
- ../userprog/syscall.h
+ ../userprog/syscall.h /usr/include/unistd.h \
+ /usr/include/i386-linux-gnu/bits/posix_opt.h \
+ /usr/include/i386-linux-gnu/bits/environments.h \
+ /usr/include/i386-linux-gnu/bits/confname.h /usr/include/getopt.h
 synchconsole.o: ../userprog/synchconsole.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../userprog/synchconsole.h ../lib/utility.h \
  ../lib/copyright.h ../machine/callback.h ../machine/console.h \

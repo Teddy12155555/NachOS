@@ -24,7 +24,8 @@
 #include "copyright.h"
 #include "main.h"
 #include "syscall.h"
-
+#include <iostream>
+#include <unistd.h>
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -65,6 +66,13 @@ ExceptionHandler(ExceptionType which)
 			val=kernel->machine->ReadRegister(4);
 			cout << "Print integer:" <<val << endl;
 			return;
+		//HW1 implement sleep function.
+		case SC_Sleep:
+			val = kernel->machine->ReadRegister(4);
+			kernel->alarm->WaitUntil(val*1000000);
+			return; //uncertain method.
+
+
 /*		case SC_Exec:
 			DEBUG(dbgAddr, "Exec\n");
 			val = kernel->machine->ReadRegister(4);

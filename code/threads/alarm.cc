@@ -22,6 +22,7 @@
 
 Alarm::Alarm(bool doRandom)
 {
+    cout << "Alarm Working!" <<endl;
     timer = new Timer(doRandom, this);
 }
 
@@ -49,15 +50,33 @@ Alarm::Alarm(bool doRandom)
 void 
 Alarm::CallBack() 
 {
+    ++tick;
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
     
     if (status == IdleMode) {	// is it time to quit?
-        if (!interrupt->AnyFutureInterrupts()) {
+        if (!interrupt->AnyFutureInterrupts()&&!idleThread) {
 	    timer->Disable();	// turn off the timer
 	}
     } else {			// there's someone to preempt
 	interrupt->YieldOnReturn();
     }
-}
 
+    //if(idleThread && kernel->stats->totalTicks > execUntil){
+    if(idleThread && tick > execUntil){
+	cout << "Resume!"<< tick  <<endl;
+	kernel->scheduler->ReadyToRun(idleThread);
+	idleThread = NULL;
+    }
+}
+//In miliseconds
+void Alarm::WaitUntil(int x)
+{
+	IntStatus oldlevel = kernel->interrupt->SetLevel(IntOff);
+	idleThread = kernel->currentThread;
+//	execUntil = kernel->stats->totalTicks + (int)((float)x/0.25);
+	execUntil = tick + (int)((float)x/0.25);
+	cout << "Exec Until: " << execUntil << endl;
+	idleThread->Sleep(false);
+	kernel->interrupt->SetLevel(oldlevel);
+}
