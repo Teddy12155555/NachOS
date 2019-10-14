@@ -22,6 +22,17 @@
 #include "callback.h"
 #include "timer.h"
 #include "thread.h"
+#include <vector>
+
+class SleepObj {
+public:
+    SleepObj(unsigned int sleepTo,Thread * thread){
+        this->sleepTo = sleepTo;
+        this->thread = thread;
+    }
+    unsigned int sleepTo = 0;
+    Thread * thread = NULL;
+};
 
 // The following class defines a software alarm clock. 
 class Alarm : public CallBackObj {
@@ -34,12 +45,12 @@ class Alarm : public CallBackObj {
 
   private:
     Timer *timer;		// the hardware timer device
-
     void CallBack();		// called when the hardware
 				// timer generates an interrupt
-    Thread * idleThread = NULL;
-    unsigned int execUntil = 0; 
     unsigned int tick = 0;
+    vector<SleepObj*> awakeList;
 };
+
+
 
 #endif // ALARM_H

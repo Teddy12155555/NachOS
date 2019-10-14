@@ -69,7 +69,7 @@ ExceptionHandler(ExceptionType which)
 		//HW1 implement sleep function.
 		case SC_Sleep:
 			val = kernel->machine->ReadRegister(4);
-			kernel->alarm->WaitUntil(val*1000000);
+			kernel->alarm->WaitUntil(val*1000);
 			return; //uncertain method.
 
 

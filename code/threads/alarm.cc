@@ -55,28 +55,38 @@ Alarm::CallBack()
     MachineStatus status = interrupt->getStatus();
     
     if (status == IdleMode) {	// is it time to quit?
-        if (!interrupt->AnyFutureInterrupts()&&!idleThread) {
+        if (!interrupt->AnyFutureInterrupts()&& awakeList.size()==0) {
 	    timer->Disable();	// turn off the timer
 	}
     } else {			// there's someone to preempt
 	interrupt->YieldOnReturn();
     }
 
-    //if(idleThread && kernel->stats->totalTicks > execUntil){
-    if(idleThread && tick > execUntil){
-	cout << "Resume!"<< tick  <<endl;
-	kernel->scheduler->ReadyToRun(idleThread);
-	idleThread = NULL;
+
+   unsigned int  resumedThreads = 0;
+    for(vector<SleepObj*>::iterator i=awakeList.begin(),j = awakeList.end(); i != j ;i++){
+    	if((*i)->sleepTo > tick)break;
+    	else {
+    		kernel->scheduler->ReadyToRun((*i)->thread);
+    		delete *i;
+    		++resumedThreads;
+    		cout << "Thread Awake:"<< tick << "!" <<endl;
+    	}
+    }
+    //cleaning up
+    if(resumedThreads){
+    	awakeList.erase(awakeList.begin(),awakeList.begin() + resumedThreads);
     }
 }
 //In miliseconds
 void Alarm::WaitUntil(int x)
 {
 	IntStatus oldlevel = kernel->interrupt->SetLevel(IntOff);
-	idleThread = kernel->currentThread;
-//	execUntil = kernel->stats->totalTicks + (int)((float)x/0.25);
-	execUntil = tick + (int)((float)x/0.25);
-	cout << "Exec Until: " << execUntil << endl;
+	Thread * idleThread = kernel->currentThread;
+	unsigned int waitTo = tick + (int)((float)x/0.25);
+	int i = 0;
+	for(int j = awakeList.size();i < j && awakeList[i]->sleepTo < waitTo ; ++i);
+	awakeList.insert(awakeList.begin()+i,new SleepObj(waitTo,idleThread));
 	idleThread->Sleep(false);
 	kernel->interrupt->SetLevel(oldlevel);
 }

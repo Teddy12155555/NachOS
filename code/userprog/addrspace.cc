@@ -20,6 +20,7 @@
 #include "addrspace.h"
 #include "machine.h"
 #include "noff.h"
+#define ODDD_DEBUG 0
 
 //----------------------------------------------------------------------
 // SwapHeader
@@ -53,6 +54,7 @@ SwapHeader (NoffHeader *noffH)
 
 AddrSpace::AddrSpace()
 {
+    /*
     pageTable = new TranslationEntry[NumPhysPages];
     for (unsigned int i = 0; i < NumPhysPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virt page # = phys page #
@@ -64,6 +66,7 @@ AddrSpace::AddrSpace()
 	pageTable[i].dirty = FALSE;
 	pageTable[i].readOnly = FALSE;  
     }
+    */
     
     // zero out the entire address space
 //    bzero(kernel->machine->mainMemory, MemorySize);
@@ -89,10 +92,13 @@ AddrSpace::~AddrSpace()
 //
 //	"fileName" is the file containing the object code to load into memory
 //----------------------------------------------------------------------
+unsigned char AddrSpace::PhysPageStatus[NumPhysPages] = {0};
+unsigned int AddrSpace::FreePhysPages = NumPhysPages;
 
 bool 
 AddrSpace::Load(char *fileName) 
 {
+    // cout << "Enter AddrSpace::Load" << endl;
     OpenFile *executable = kernel->fileSystem->Open(fileName);
     NoffHeader noffH;
     unsigned int size;
@@ -115,31 +121,119 @@ AddrSpace::Load(char *fileName)
 //	cout << "number of pages of " << fileName<< " is "<<numPages<<endl;
     size = numPages * PageSize;
 
-    ASSERT(numPages <= NumPhysPages);		// check we're not trying
+    ASSERT(numPages <= FreePhysPages);		
+                        // check we're not trying
 						// to run anything too big --
 						// at least until we have
 						// virtual memory
 
-    DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
+    //create pageTable
+    pageTable = new TranslationEntry[numPages];
+    for (unsigned int i = 0,_i = 0; i < numPages; i++) {
+        pageTable[i].virtualPage = i;   // for now, virt page # = phys page #
+        while(AddrSpace::PhysPageStatus[_i] != 0) ++_i;
+        AddrSpace::PhysPageStatus[_i] = 1;
+        pageTable[i].physicalPage = _i;
+        pageTable[i].valid = TRUE;
+        pageTable[i].use = FALSE;
+        pageTable[i].dirty = FALSE;
+        pageTable[i].readOnly = FALSE;
+        // cout << "Virtual Page: " << i  << " Physical Page: "<< _i <<endl;
+    }
+    FreePhysPages -= numPages;
 
+    DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
 // then, copy in the code and data segments into memory
 	if (noffH.code.size > 0) {
         DEBUG(dbgAddr, "Initializing code segment.");
-	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
-        	executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.code.virtualAddr]), 
-			noffH.code.size, noffH.code.inFileAddr);
+	    DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
+
+        unsigned int start = noffH.code.virtualAddr;
+        unsigned int end = start + noffH.code.size;
+        unsigned int tableIndex = 0;
+        unsigned int offset = 0;
+        unsigned int inFileAddr = noffH.code.inFileAddr;
+        // cout <<"s:" <<  start <<" e:"<< end << " p:" << PageSize << endl;
+        {
+            unsigned int physAddr = GetPhysAddr(start,tableIndex,offset);
+            if(offset!=0){
+                // cout << "Code Head != 0" <<endl;
+                unsigned int size = PageSize - offset;
+                executable->ReadAt(
+                    &(kernel->machine->mainMemory[physAddr]),
+                    size,inFileAddr);
+                start += size;
+                inFileAddr += size;
+            }
+        }
+        while(start + PageSize < end){
+            // cout <<"Read s:" <<  start <<" e:"<< end << " f:" << inFileAddr << endl;
+            executable->ReadAt(
+                &(kernel->machine->mainMemory[GetPhysAddr(start,tableIndex,offset)]),
+                PageSize,inFileAddr);
+            start+= PageSize;
+            inFileAddr += PageSize;
+            // cout <<"Read Done s:" <<  start <<" e:"<< end << " f:" << inFileAddr << endl;
+        }
+        {
+            if(start != end){
+                // cout << "start != end" <<endl;
+                executable->ReadAt(
+                    &(kernel->machine->mainMemory[GetPhysAddr(start,tableIndex,offset)]),
+                    end-start,inFileAddr);
+            }
+        }
+        // cout <<"Code Done s:" <<  start <<" e:"<< end << " f:" << inFileAddr << endl;
     }
 	if (noffH.initData.size > 0) {
         DEBUG(dbgAddr, "Initializing data segment.");
-	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
-        executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.initData.virtualAddr]),
-			noffH.initData.size, noffH.initData.inFileAddr);
+        DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
+        unsigned int start = noffH.initData.virtualAddr;
+        unsigned int end = start + noffH.initData.size;
+        unsigned int tableIndex = 0;
+        unsigned int offset = 0;
+        unsigned int inFileAddr = noffH.initData.inFileAddr;
+        // cout <<"s:" <<  start <<" e:"<< end << " p:" << PageSize << endl;
+        {
+            unsigned int physAddr = GetPhysAddr(start,tableIndex,offset);
+            if(offset!=0){
+                // cout << "Code Head != 0" <<endl;
+                unsigned int size = PageSize - offset;
+                executable->ReadAt(
+                    &(kernel->machine->mainMemory[physAddr]),
+                    size,inFileAddr);
+                start += size;
+                inFileAddr += size;
+            }
+        }
+        while(start + PageSize < end){
+            // cout <<"Read s:" <<  start <<" e:"<< end << " f:" << inFileAddr << endl;
+            executable->ReadAt(
+                &(kernel->machine->mainMemory[GetPhysAddr(start,tableIndex,offset)]),
+                PageSize,inFileAddr);
+            start+= PageSize;
+            inFileAddr += PageSize;
+            // cout <<"Read Done s:" <<  start <<" e:"<< end << " f:" << inFileAddr << endl;
+        }
+        {
+            if(start != end){
+                // cout << "start != end" <<endl;
+                executable->ReadAt(
+                    &(kernel->machine->mainMemory[GetPhysAddr(start,tableIndex,offset)]),
+                    end-start,inFileAddr);
+            }
+        }
+        // cout <<"InitData Done s:" <<  start <<" e:"<< end << " f:" << inFileAddr << endl;
     }
-
+    // cout << "Leave AddrSpace::Load" << endl;
     delete executable;			// close file
     return TRUE;			// success
+}
+
+unsigned int AddrSpace::GetPhysAddr(unsigned int virtualAddr,unsigned int& tableIdx, unsigned int & offset){
+    tableIdx = virtualAddr/PageSize;
+    offset = virtualAddr%PageSize;
+    return pageTable[tableIdx].physicalPage *PageSize + offset;
 }
 
 //----------------------------------------------------------------------

@@ -20,6 +20,8 @@
 #define UserStackSize		1024 	// increase this as necessary!
 
 class AddrSpace {
+    static unsigned char PhysPageStatus[NumPhysPages];
+    static unsigned int FreePhysPages;
   public:
     AddrSpace();			// Create an address space.
     ~AddrSpace();			// De-allocate an address space
@@ -41,7 +43,7 @@ class AddrSpace {
 
     void InitRegisters();		// Initialize user-level CPU registers,
 					// before jumping to user code
+    unsigned int GetPhysAddr(unsigned int virtualAddr,unsigned int& tableIdx, unsigned int & offset);
 
 };
-
 #endif // ADDRSPACE_H
