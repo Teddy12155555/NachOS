@@ -60,6 +60,7 @@ ThreadedKernel::ThreadedKernel(int argc, char **argv)
 void
 ThreadedKernel::Initialize()
 {
+    cout << "Schedular Type: " << type << endl;
     stats = new Statistics();		// collect statistics
     interrupt = new Interrupt;		// start up interrupt handling
     scheduler = new Scheduler(type);	// initialize the ready queue
