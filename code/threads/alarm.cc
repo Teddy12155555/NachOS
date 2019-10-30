@@ -54,12 +54,16 @@ Alarm::CallBack()
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
     
+    kernel->currentThread->setPriority(kernel->currentThread->getPriority() - 1);
     if (status == IdleMode) {	// is it time to quit?
         if (!interrupt->AnyFutureInterrupts()&& awakeList.size()==0) {
 	    timer->Disable();	// turn off the timer
 	}
     } else {			// there's someone to preempt
-	interrupt->YieldOnReturn();
+       SchedulerType Mode = kernel->scheduler->getSchedulerType();
+	   if( Mode == RR || Mode == Priority || Mode == SRTF) {
+		  interrupt->YieldOnReturn();
+	   }
     }
 
 
