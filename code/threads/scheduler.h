@@ -19,9 +19,10 @@
 
 enum SchedulerType {
         RR,     // Round Robin
-        SJF,
-        Priority,
-	FIFO
+        SJF,	// Shortest Job First
+        SRTF,	// Shortest Remaining Time First
+        Priority,	// Priority
+		FIFO,	//First In First Out(Serve)
 };
 
 class Scheduler {
@@ -40,7 +41,7 @@ class Scheduler {
     					// running needs to be deleted
 	void Print();			// Print contents of ready list
     
-    	void setSchedulerType(SchedulerType t) {schedulerType = t;}
+    void setSchedulerType(SchedulerType t) {schedulerType = t;}
 	SchedulerType getSchedulerType() {return schedulerType;}
 
     // SelfTest for scheduler is implemented in class Thread

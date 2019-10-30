@@ -27,10 +27,15 @@
 // Compare function
 //----------------------------------------------------------------------
 int PriorityCompare(Thread *a, Thread *b) {
-    if(a->getPriority() == b->getPriority())
-        return 0;
+    if(a->getPriority() == b->getPriority()) return 0;
     return a->getPriority() > b->getPriority() ? 1 : -1;
 }
+
+int BurstTimeCompare(Thread *a , Thread *b){
+    if(a->getBurstTime() == b->getBurstTime()) return 0;
+    return a->getBurstTime() > b->getBurstTime() ? 1 : -1;
+}
+
 
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
@@ -40,7 +45,6 @@ int PriorityCompare(Thread *a, Thread *b) {
 
 Scheduler::Scheduler()
 {
-//	schedulerType = type;
 	readyList = new List<Thread *>; 
 	Scheduler(RR);
 }
@@ -50,17 +54,20 @@ Scheduler::Scheduler(SchedulerType type)
 	schedulerType = type;
 	switch(schedulerType) {
     	case RR:
-        	readyList = new List<Thread *>;
+            readyList = new List<Thread *>;
         	break;
+        case FIFO:
+            readyList = new List<Thread *>;
+            break;
     	case SJF:
-		/* todo */
+		    readyList = new SortedList<Thread *>(BurstTimeCompare);
         	break;
+        case SRTF:
+            readyList = new SortedList<Thread *>(BurstTimeCompare);
+            break;
     	case Priority:
-		readyList = new SortedList<Thread *>(PriorityCompare);
+		    readyList = new SortedList<Thread *>(PriorityCompare);
         	break;
-    	case FIFO:
-		/* todo */
-		break;
    	}
 	toBeDestroyed = NULL;
 } 
@@ -106,9 +113,10 @@ Scheduler::FindNextToRun ()
     ASSERT(kernel->interrupt->getLevel() == IntOff);
 
     if (readyList->IsEmpty()) {
-	return NULL;
-    } else {
-    	return readyList->RemoveFront();
+        return NULL;
+    } 
+    else {
+        return readyList->RemoveFront();
     }
 }
 
