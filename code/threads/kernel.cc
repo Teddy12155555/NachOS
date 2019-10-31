@@ -41,7 +41,7 @@ ThreadedKernel::ThreadedKernel(int argc, char **argv)
         } else if (strcmp(argv[i], "FCFS") == 0) {
             type = FIFO;
         } else if (strcmp(argv[i], "PRIORITY") == 0) {
-            type = Priority;
+            type = PRIORITY ;
         } else if (strcmp(argv[i], "SJF") == 0) {
             type = SJF;
         } else if (strcmp(argv[i], "SRTF") == 0) {

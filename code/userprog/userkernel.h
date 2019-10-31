@@ -42,6 +42,9 @@ class UserProgKernel : public ThreadedKernel {
 	Thread* t[10];
 	char*	execfile[10];
 	int	execfileNum;
+
+    int priority[10];
+    int priorityNum;
 };
 
 #endif //USERKERNEL_H

@@ -209,7 +209,7 @@ Thread::Yield ()
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Yielding thread: " << name);
-    
+    cout << "Yielding thread: " << name <<endl;
     nextThread = kernel->scheduler->FindNextToRun();
     if (nextThread != NULL) {
 	kernel->scheduler->ReadyToRun(this);
@@ -440,6 +440,7 @@ Thread::SelfTest()
 
     Thread *t;
     for (int i = 0; i < number; i ++) {
+        cout << "Add:   " << name[i] << endl; 
         t = new Thread(name[i]);
         t->setPriority(priority[i]);
         t->setBurstTime(burst[i]);

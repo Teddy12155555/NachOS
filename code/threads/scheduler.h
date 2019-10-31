@@ -21,7 +21,7 @@ enum SchedulerType {
         RR,     // Round Robin
         SJF,	// Shortest Job First
         SRTF,	// Shortest Remaining Time First
-        Priority,	// Priority
+        PRIORITY ,	// Priority
 		FIFO,	//First In First Out(Serve)
 };
 

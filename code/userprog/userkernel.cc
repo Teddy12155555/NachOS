@@ -42,7 +42,10 @@ UserProgKernel::UserProgKernel(int argc, char **argv)
 		cout << "For example:" << endl;
 		cout << "	./nachos -s : Print machine status during the machine is on." << endl;
 		cout << "	./nachos -e file1 -e file2 : executing file1 and file2."  << endl;
-	}
+	} else if (strcmp(argv[i], "-p") == 0){
+		priority[++priorityNum] = atoi(argv[++i]);
+		// cout << "test hellooooooooyayayayayyayaya" <<endl;
+	} 
     }
 }
 
@@ -97,6 +100,7 @@ UserProgKernel::Run()
 		{
 		t[n] = new Thread(execfile[n]);
 		t[n]->space = new AddrSpace();
+		t[n]->setPriority(priority[n]);
 		t[n]->Fork((VoidFunctionPtr) &ForkExecute, (void *)t[n]);
 		cout << "Thread " << execfile[n] << " is executing." << endl;
 		}

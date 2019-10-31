@@ -61,7 +61,7 @@ Alarm::CallBack()
 	}
     } else {			// there's someone to preempt
        SchedulerType Mode = kernel->scheduler->getSchedulerType();
-	   if( Mode == RR || Mode == Priority || Mode == SRTF) {
+	   if( Mode == RR || Mode == PRIORITY || Mode == SRTF) {
 		  interrupt->YieldOnReturn();
 	   }
     }

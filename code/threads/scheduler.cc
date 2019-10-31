@@ -65,7 +65,7 @@ Scheduler::Scheduler(SchedulerType type)
         case SRTF:
             readyList = new SortedList<Thread *>(BurstTimeCompare);
             break;
-    	case Priority:
+    	case PRIORITY :
 		    readyList = new SortedList<Thread *>(PriorityCompare);
         	break;
    	}
@@ -115,9 +115,19 @@ Scheduler::FindNextToRun ()
     if (readyList->IsEmpty()) {
         return NULL;
     } 
-    else {
-        return readyList->RemoveFront();
+    else if(kernel->currentThread != NULL && kernel->currentThread->getStatus()!=BLOCKED) {
+        switch(schedulerType){
+            case PRIORITY:
+            cout << "test fuckyouoooooooo~~!!!!!"<<endl;
+                return readyList->Front()->getPriority() <   kernel->currentThread->getPriority() ? readyList->RemoveFront() : NULL;
+                break;
+            case SRTF:
+              cout << "test fuckyou~~!!!!!"<<endl;
+                return readyList->Front()->getBurstTime() < kernel->currentThread->getBurstTime() ?   readyList->RemoveFront() : NULL;
+                break;
+        }
     }
+     return readyList->RemoveFront();
 }
 
 //----------------------------------------------------------------------
