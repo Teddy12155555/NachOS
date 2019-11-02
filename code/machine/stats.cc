@@ -42,4 +42,5 @@ Statistics::Print()
     cout << "Paging: faults " << numPageFaults << "\n";
     cout << "Network I/O: packets received " << numPacketsRecvd;
 		cout << ", sent " << numPacketsSent << "\n";
+    cout << "MyTest!!!!!!!!!!!!!!!! : " << userTicks << "\n";
 }

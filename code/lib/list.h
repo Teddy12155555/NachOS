@@ -69,6 +69,7 @@ class List {
 				// has this list been corrupted?
     void SelfTest(T *p, int numEntries);
 				// verify module is working
+    
 
   protected:
     ListElement<T> *first;  	// Head of the list, NULL if list is empty

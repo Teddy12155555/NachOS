@@ -106,6 +106,8 @@ class Thread {
     ThreadStatus getStatus(){return status;}
     void setBurstTime(int t)	{burstTime = t;}
     int getBurstTime()		{return burstTime;}
+    void setWaitTime(int t) {waitTime = t;}
+    int getWaitTime()       {return waitTime;}
     void setPriority(int t)	{priority = t;}
     int getPriority()		{return priority;}
     char* getName() { return (name); }
@@ -121,7 +123,8 @@ class Thread {
     ThreadStatus status;	// ready, running or blocked
     char* name;
     int burstTime;
-    int priority=100;	
+    int priority=100;
+    int waitTime=0;	
     void StackAllocate(VoidFunctionPtr func, void *arg);
     				// Allocate a stack for thread.
 				// Used internally by Fork()

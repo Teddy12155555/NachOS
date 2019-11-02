@@ -157,8 +157,21 @@ Interrupt::OneTick()
     } else {					// USER_PROGRAM
 	stats->totalTicks += UserTick;
 	stats->userTicks += UserTick;
+    kernel->currentThread->setBurstTime(kernel->currentThread->getBurstTime()+1);
+    //Thread *test = kernel->scheduler->readyList->
+    //cout << "Hi I m Test !!!!! "  <<  kernel->scheduler->readyList->NumInList() << "\n";
+
+    ListIterator<Thread*> iter((kernel->scheduler->readyList)); 
+    for (; !iter.IsDone(); iter.Next()) {
+        if(iter.Item() == kernel->currentThread)continue;
+        iter.Item()->setWaitTime(iter.Item()->getWaitTime()+1);
+    }
     }
     DEBUG(dbgInt, "== Tick " << stats->totalTicks << " ==");
+    //count tick
+    
+    //cout << kernel->currentThread->getBurstTime() << "\n";
+
 
 // check any pending interrupts are now ready to fire
     ChangeLevel(IntOn, IntOff);	// first, turn off interrupts
@@ -170,6 +183,7 @@ Interrupt::OneTick()
     				// for a context switch, ok to do it now
 	yieldOnReturn = FALSE;
  	status = SystemMode;		// yield is a kernel routine
+
 	kernel->currentThread->Yield();
 	status = oldStatus;
     }

@@ -35,6 +35,7 @@ const int STACK_FENCEPOST = 0xdedbeef;
 
 Thread::Thread(char* threadName)
 {
+    setBurstTime(0);
     name = threadName;
     stackTop = NULL;
     stack = NULL;
@@ -64,10 +65,10 @@ Thread::Thread(char* threadName)
 Thread::~Thread()
 {
     DEBUG(dbgThread, "Deleting thread: " << name);
-
     ASSERT(this != kernel->currentThread);
     if (stack != NULL)
 	DeallocBoundedArray((char *) stack, StackSize * sizeof(int));
+    
 }
 
 //----------------------------------------------------------------------
@@ -177,7 +178,9 @@ Thread::Finish ()
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Finishing thread: " << name);
-    
+    //cout << "Mom I m Here!!!!!!!!!!!!!!!!!!!!!!!" << "\n";
+    cout << "Thread " << name << " 's BurstTime : " << burstTime << " Ticks \n";
+    cout << "Thread " << name << " 's WaitTime : " << waitTime << " Ticks \n";
     Sleep(TRUE);				// invokes SWITCH
     // not reached
 }
