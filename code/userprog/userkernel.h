@@ -29,6 +29,8 @@ class UserProgKernel : public ThreadedKernel {
 
     void SelfTest();		// test whether kernel is working
 
+    
+
 // These are public for notational convenience.
     Machine *machine;
     FileSystem *fileSystem;

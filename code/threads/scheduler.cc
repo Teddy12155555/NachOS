@@ -118,11 +118,11 @@ Scheduler::FindNextToRun ()
     else if(kernel->currentThread != NULL && kernel->currentThread->getStatus()!=BLOCKED) {
         switch(schedulerType){
             case PRIORITY:
-            cout << "test fuckyouoooooooo~~!!!!!"<<endl;
+            //cout << "test fuckyouoooooooo~~!!!!!"<<endl;
                 return readyList->Front()->getPriority() <   kernel->currentThread->getPriority() ? readyList->RemoveFront() : NULL;
                 break;
             case SRTF:
-              cout << "test fuckyou~~!!!!!"<<endl;
+              //cout << "test fuckyou~~!!!!!"<<endl;
                 return readyList->Front()->getBurstTime() < kernel->currentThread->getBurstTime() ?   readyList->RemoveFront() : NULL;
                 break;
         }

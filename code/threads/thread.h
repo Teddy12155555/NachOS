@@ -110,6 +110,8 @@ class Thread {
     int getWaitTime()       {return waitTime;}
     void setPriority(int t)	{priority = t;}
     int getPriority()		{return priority;}
+    void setArrivalTime(int t)    {arrivalTime = t;}
+    int getArrivalTime()    {return arrivalTime;}
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
@@ -124,7 +126,8 @@ class Thread {
     char* name;
     int burstTime;
     int priority=100;
-    int waitTime=0;	
+    int waitTime=0;
+    int arrivalTime = 0;
     void StackAllocate(VoidFunctionPtr func, void *arg);
     				// Allocate a stack for thread.
 				// Used internally by Fork()

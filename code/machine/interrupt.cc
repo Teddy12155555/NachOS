@@ -153,11 +153,11 @@ Interrupt::OneTick()
 // advance simulated time
     if (status == SystemMode) {
         stats->totalTicks += SystemTick;
-	stats->systemTicks += SystemTick;
+	   stats->systemTicks += SystemTick;
     } else {					// USER_PROGRAM
-	stats->totalTicks += UserTick;
-	stats->userTicks += UserTick;
-    kernel->currentThread->setBurstTime(kernel->currentThread->getBurstTime()+1);
+	   stats->totalTicks += UserTick;
+	   stats->userTicks += UserTick;
+        kernel->currentThread->setBurstTime(kernel->currentThread->getBurstTime()+1);
     //Thread *test = kernel->scheduler->readyList->
     //cout << "Hi I m Test !!!!! "  <<  kernel->scheduler->readyList->NumInList() << "\n";
 

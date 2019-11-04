@@ -26,7 +26,7 @@ ThreadedKernel::ThreadedKernel(int argc, char **argv)
 {
     randomSlice = FALSE; 
     type = RR;
-
+    totalWaitTime = 0;  
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-rs") == 0) {
  	        ASSERT(i + 1 < argc);

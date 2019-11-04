@@ -45,6 +45,7 @@ class Scheduler {
 
     // SelfTest for scheduler is implemented in class Thread
     List<Thread *> *readyList;
+    int readyListNum;
     
   private:
 	SchedulerType schedulerType;

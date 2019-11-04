@@ -179,8 +179,13 @@ Thread::Finish ()
     
     DEBUG(dbgThread, "Finishing thread: " << name);
     //cout << "Mom I m Here!!!!!!!!!!!!!!!!!!!!!!!" << "\n";
-    cout << "Thread " << name << " 's BurstTime : " << burstTime << " Ticks \n";
-    cout << "Thread " << name << " 's WaitTime : " << waitTime << " Ticks \n";
+    kernel->totalWaitTime += waitTime;
+    if(strcmp(name,"main") != 0 && strcmp(name,"controller") != 0 && strcmp(name,"ping") != 0)
+    {
+        cout << "Thread " << name << " 's BurstTime : " << burstTime << " Ticks \n";
+        cout << "Thread " << name << " 's WaitTime : " << waitTime << " Ticks \n";
+    }
+    
     Sleep(TRUE);				// invokes SWITCH
     // not reached
 }
@@ -212,7 +217,10 @@ Thread::Yield ()
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Yielding thread: " << name);
-    cout << "Yielding thread: " << name <<endl;
+    if((strcmp(name,"main") != 0 && strcmp(name,"controller") != 0 && strcmp(name,"ping") != 0)){
+        cout << "Yielding thread: " << name <<endl;
+    }
+    
     nextThread = kernel->scheduler->FindNextToRun();
     if (nextThread != NULL) {
 	kernel->scheduler->ReadyToRun(this);
@@ -404,6 +412,12 @@ Thread::RestoreUserState()
 
 #endif
 
+// for self test 
+List<Thread*>* unArrival;
+int CurTime;
+void checkFork();
+
+
 //----------------------------------------------------------------------
 // SimpleThread
 // 	Loop 5 times, yielding the CPU to another ready thread 
@@ -419,10 +433,30 @@ SimpleThread()
     Thread *thread = kernel->currentThread;
     while (thread->getBurstTime() > 0) {
         thread->setBurstTime(thread->getBurstTime() - 1);
-	printf("%s: %d\n", kernel->currentThread->getName(), kernel->currentThread->getBurstTime());
+        checkFork();
+        ++CurTime;
+	   printf("%s: %d\n", kernel->currentThread->getName(), kernel->currentThread->getBurstTime());
         //kernel->currentThread->Yield();
-	kernel->interrupt->OneTick();
+	   kernel->interrupt->OneTick();
     }    
+}
+
+void checkFork()
+{
+    ListIterator<Thread*> iter((unArrival)); 
+    for (; !iter.IsDone(); ) {
+        if(iter.Item()->getArrivalTime() == CurTime)
+        {
+            iter.Item()->Fork((VoidFunctionPtr) SimpleThread, (void *)NULL);
+            Thread* temp = iter.Item();
+            iter.Next();
+            unArrival->Remove(temp);
+        }
+        else
+        {
+            iter.Next();
+        }
+    }
 }
 
 //----------------------------------------------------------------------
@@ -436,19 +470,31 @@ Thread::SelfTest()
 {
     DEBUG(dbgThread, "Entering Thread::SelfTest");
     
-    const int number 	 = 3;
-    char *name[number] 	 = {"A", "B", "C"};
-    int burst[number] 	 = {3, 10, 4};
-    int priority[number] = {4, 5, 3};
+    const int number 	 = 4;
+    unArrival = new List<Thread *>;
+    CurTime = 0;
+    char *name[number] 	 = {"M", "A", "B", "C"};
+    int burst[number] 	 = {5, 3, 10, 4};
+    int priority[number] = {0, 4, 5, 3};
+    int arival[number] = {0, 7,1,8};
 
     Thread *t;
     for (int i = 0; i < number; i ++) {
-        cout << "Add:   " << name[i] << endl; 
+        cout << "Add:   " << name[i] << "   Burst:  " << burst[i] << "  Priority:   " << priority[i] << "   Arrival:    " << arival[i] << endl; 
         t = new Thread(name[i]);
         t->setPriority(priority[i]);
         t->setBurstTime(burst[i]);
-        t->Fork((VoidFunctionPtr) SimpleThread, (void *)NULL);
+        t->setArrivalTime(arival[i]);
+        if(t->getArrivalTime() == 0){
+            t->Fork((VoidFunctionPtr) SimpleThread, (void *)NULL);
+        }
+        else
+        {
+            unArrival->Append(t);
+        }
     }
     kernel->currentThread->Yield();
 }
+
+
 

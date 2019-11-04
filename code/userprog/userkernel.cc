@@ -22,6 +22,7 @@ UserProgKernel::UserProgKernel(int argc, char **argv)
 {
     debugUserProg = FALSE;
 	execfileNum=0;
+	
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-s") == 0) {
 	    debugUserProg = TRUE;
@@ -74,6 +75,8 @@ UserProgKernel::Initialize()
 
 UserProgKernel::~UserProgKernel()
 {
+cout << "Average WaitTime:	" << (double)totalWaitTime /  execfileNum << endl;
+
     delete fileSystem;
     delete machine;
 #ifdef FILESYS
