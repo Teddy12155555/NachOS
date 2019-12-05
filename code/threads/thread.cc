@@ -477,7 +477,6 @@ Thread::SelfTest()
     int burst[number] 	 = {5, 3, 10, 4};
     int priority[number] = {0, 4, 5, 3};
     int arival[number] = {0, 7,1,8};
-
     Thread *t;
     for (int i = 0; i < number; i ++) {
         cout << "Add:   " << name[i] << "   Burst:  " << burst[i] << "  Priority:   " << priority[i] << "   Arrival:    " << arival[i] << endl; 

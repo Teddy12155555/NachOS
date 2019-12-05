@@ -62,6 +62,10 @@ UserProgKernel::Initialize()
 
     machine = new Machine(debugUserProg);
     fileSystem = new FileSystem();
+
+    // hw4 my synchdisk
+    vm_Disk = new SynchDisk("New vm Disk");
+
 #ifdef FILESYS
     synchDisk = new SynchDisk("New SynchDisk");
 #endif // FILESYS
