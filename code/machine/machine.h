@@ -137,9 +137,7 @@ class Machine {
     bool isFIFO;    
     bool usedPhysPage[NumPhysPages];    // check Used Phiscal Page
     bool usedVirPage[NumPhysPages];     // check used virtual page
-    int count[NumPhysPages];  // for LRU
-
-    TranslationEntry *mainMemTable[NumPhysPages]; // to let us check page
+    TranslationEntry *mainMemTable[NumPhysPages]; // to let us check all the page table
 
   private:
 
