@@ -126,7 +126,7 @@ AddrSpace::Load(char *fileName)
     cout << "init data Size: " << noffH.initData.size<< endl;
     cout << "uninitData.size: " << noffH.uninitData.size << endl;
     cout << "numPages:  " << numPages << endl;
-    cout << "============================" << endl;
+    cout << "============================" << endl << endl;
 //	cout << "number of pages of " << fileName<< " is "<<numPages<<endl;
     size = numPages * PageSize;
 
@@ -144,9 +144,14 @@ AddrSpace::Load(char *fileName)
                  while(kernel->machine->usedPhysPage[j]!=FALSE&&j<NumPhysPages){j++;}
                  
                  // if we have a useful memory
-                 if(j<NumPhysPages){   
-                  kernel->machine->usedPhysPage[j]=TRUE;
-                  kernel->machine->mainMemTable[j]=&pageTable[i];
+                 if(j<NumPhysPages){  
+                  // set our physical page to "is used"
+                  kernel->machine->usedPhysPage[j] = TRUE;
+
+                  // assign it to our main memory page table
+                  kernel->machine->mainMemTable[j] = &pageTable[i];
+
+                  // set our page status
                   pageTable[i].physicalPage = j;
                   pageTable[i].valid = TRUE;
                   pageTable[i].use = FALSE;
@@ -157,25 +162,29 @@ AddrSpace::Load(char *fileName)
                  }
                  // if we don't have a useful memory
                 else{ 
+                      // out temporary buffer for the page
                       char *buf = new char[PageSize];
 
                       // find a useful virtual memory
                       int k = 0;
                       while(kernel->machine->usedVirPage[k]!=FALSE){k++;}
 
+                      // check if we find a useful virtual memory
                       if( k > NumPhysPages)
                       {
                         cout << "Virtual Memory out of range" << endl;
                         return AddressErrorException;
                       }
-
                       kernel->machine->usedVirPage[k]=true;
+
+                      // set our virtaul page status
                       pageTable[i].virtualPage=k;
                       pageTable[i].valid = FALSE;
                       pageTable[i].use = FALSE;
                       pageTable[i].dirty = FALSE;
                       pageTable[i].readOnly = FALSE;
                       executable->ReadAt(buf, PageSize, noffH.code.inFileAddr+(i*PageSize));
+                      // write it to our disk
                       kernel->vm_Disk->WriteSector(k, buf);
                     }
                 }

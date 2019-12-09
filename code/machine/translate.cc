@@ -226,7 +226,6 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
         cout <<"something" << endl;
         return AddressErrorException;
     } else if (!pageTable[vpn].valid) {
-
                 kernel->stats->numPageFaults++;
 
                 // find useful physical page
@@ -238,18 +237,15 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
                     // temporary buffer for saving Page
                     char *buf = new char[PageSize];
                     kernel->machine->usedPhysPage[j]=TRUE;
-              
+                    // set our status
                     kernel->machine->mainMemTable[j]=&pageTable[vpn];
                     pageTable[vpn].physicalPage = j;
                     pageTable[vpn].valid = TRUE;
-
-                    if(! isFIFO){
-                         pageTable[vpn].count++;
-                    }
-                    
+                    if(! isFIFO) pageTable[vpn].count++;
+                    // read our data from disk
                     kernel->vm_Disk->ReadSector(pageTable[vpn].virtualPage, buf);
+                    // write it to our main memory
                     bcopy(buf,&mainMemory[j*PageSize],PageSize);
-                    
                  }
                  // if we don't have a useful memory
                 else{
