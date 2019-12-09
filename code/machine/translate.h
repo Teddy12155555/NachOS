@@ -43,7 +43,6 @@ class TranslationEntry {
 
     // hw4
     int count;    //for LRU
-    int ID;
 
 };
 
