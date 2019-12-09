@@ -134,13 +134,12 @@ class Machine {
     bool ReadMem(int addr, int size, int* value);
 
     // hw4 region
-    bool usedPhysPage[NumPhysPages];
-    bool usedVirPage[NumPhysPages];
-    int ID;
-    int physPageName[NumPhysPages]; 
+    bool isFIFO;    
+    bool usedPhysPage[NumPhysPages];    // check Used Phiscal Page
+    bool usedVirPage[NumPhysPages];     // check used virtual page
     int count[NumPhysPages];  // for LRU
-    int sectorNum; // num in disk
-    TranslationEntry *main_tab[NumPhysPages];
+
+    TranslationEntry *mainMemTable[NumPhysPages]; // to let us check page
 
   private:
 

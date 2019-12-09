@@ -35,6 +35,9 @@ class UserProgKernel : public ThreadedKernel {
     Machine *machine;
     FileSystem *fileSystem;
 
+    bool isFIFO = true;
+
+
 #ifdef FILESYS
     SynchDisk *synchDisk;
 #endif // FILESYS

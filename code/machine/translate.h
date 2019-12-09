@@ -43,9 +43,6 @@ class TranslationEntry {
 
     // hw4
     int count;    //for LRU
-    
-    bool reference_bit; //for second chance algo.
-   
     int ID;
 
 };

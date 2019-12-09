@@ -22,7 +22,7 @@
 
 Alarm::Alarm(bool doRandom)
 {
-    cout << "Alarm Working!" <<endl;
+    // cout << "Alarm Working!" <<endl;
     timer = new Timer(doRandom, this);
 }
 

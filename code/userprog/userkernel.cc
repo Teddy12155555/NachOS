@@ -45,8 +45,13 @@ UserProgKernel::UserProgKernel(int argc, char **argv)
 		cout << "	./nachos -e file1 -e file2 : executing file1 and file2."  << endl;
 	} else if (strcmp(argv[i], "-p") == 0){
 		priority[++priorityNum] = atoi(argv[++i]);
-		// cout << "test hellooooooooyayayayayyayaya" <<endl;
 	} 
+	else if(strcmp(argv[i], "FIFO") == 0){
+		isFIFO = true;
+	}
+	else if(strcmp(argv[i], "LRU") == 0){
+		isFIFO = false;
+	}
     }
 }
 
@@ -61,6 +66,8 @@ UserProgKernel::Initialize()
     ThreadedKernel::Initialize();	// init multithreading
 
     machine = new Machine(debugUserProg);
+    machine->isFIFO = isFIFO;
+
     fileSystem = new FileSystem();
 
     // hw4 my synchdisk
@@ -79,7 +86,7 @@ UserProgKernel::Initialize()
 
 UserProgKernel::~UserProgKernel()
 {
-cout << "Average WaitTime:	" << (double)totalWaitTime /  execfileNum << endl;
+// cout << "Average WaitTime:	" << (double)totalWaitTime /  execfileNum << endl;
 
     delete fileSystem;
     delete machine;

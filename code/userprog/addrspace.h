@@ -33,7 +33,7 @@ class AddrSpace {
     void RestoreState();		// info on a context switch 
 
     // hw4
-    int ID;
+    // int ID;
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!
@@ -48,7 +48,7 @@ class AddrSpace {
     unsigned int GetPhysAddr(unsigned int virtualAddr,unsigned int& tableIdx, unsigned int & offset);
 
     //hw4
-    bool pt_is_load;
+    bool pageTableLoaded;
 
 };
 #endif // ADDRSPACE_H

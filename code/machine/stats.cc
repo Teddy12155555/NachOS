@@ -39,8 +39,8 @@ Statistics::Print()
 		cout << ", writes " << numDiskWrites << "\n";
 		cout << "Console I/O: reads " << numConsoleCharsRead;
     cout << ", writes " << numConsoleCharsWritten << "\n";
-    cout << "Paging: faults " << numPageFaults << "\n";
+    cout << "Paging faults: " << numPageFaults << "\n";
     cout << "Network I/O: packets received " << numPacketsRecvd;
 		cout << ", sent " << numPacketsSent << "\n";
-    cout << "MyTest!!!!!!!!!!!!!!!! : " << userTicks << "\n";
+    // cout << "MyTest!!!!!!!!!!!!!!!! : " << userTicks << "\n";
 }

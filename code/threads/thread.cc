@@ -180,11 +180,11 @@ Thread::Finish ()
     DEBUG(dbgThread, "Finishing thread: " << name);
     //cout << "Mom I m Here!!!!!!!!!!!!!!!!!!!!!!!" << "\n";
     kernel->totalWaitTime += waitTime;
-    if(strcmp(name,"main") != 0 && strcmp(name,"controller") != 0 && strcmp(name,"ping") != 0)
-    {
-        cout << "Thread " << name << " 's BurstTime : " << burstTime << " Ticks \n";
-        cout << "Thread " << name << " 's WaitTime : " << waitTime << " Ticks \n";
-    }
+    // if(strcmp(name,"main") != 0 && strcmp(name,"controller") != 0 && strcmp(name,"ping") != 0)
+    // {
+    //     cout << "Thread " << name << " 's BurstTime : " << burstTime << " Ticks \n";
+    //     cout << "Thread " << name << " 's WaitTime : " << waitTime << " Ticks \n";
+    // }
     
     Sleep(TRUE);				// invokes SWITCH
     // not reached
@@ -217,9 +217,9 @@ Thread::Yield ()
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Yielding thread: " << name);
-    if((strcmp(name,"main") != 0 && strcmp(name,"controller") != 0 && strcmp(name,"ping") != 0)){
-        cout << "Yielding thread: " << name <<endl;
-    }
+    // if((strcmp(name,"main") != 0 && strcmp(name,"controller") != 0 && strcmp(name,"ping") != 0)){
+    //     // cout << "Yielding thread: " << name <<endl;
+    // }
     
     nextThread = kernel->scheduler->FindNextToRun();
     if (nextThread != NULL) {
