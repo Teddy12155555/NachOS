@@ -272,7 +272,7 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
                                  } 
                                 pageTable[victim].count++;
                             }
-
+                    cout << "Victim Page: \t" << victim << "\tswaped out" << endl;
                      // read the page which we want to use  to the buffer and
                      // write our victim page to the disk
                      bcopy(&mainMemory[victim*PageSize],buf1,PageSize);
